@@ -2,7 +2,7 @@
 
 ## Module structure
 
-The package is a Swift 6.4 feature package depending on AppleServices. Its target exposes the AppleServices umbrella import, then provides a small stateful use-case surface:
+The package is a Swift 6.4 domain package with public service protocols and a stateful use-case surface. It does not depend on AppleServices. The application composition root supplies protocol implementations from the data package:
 
 ```text
 Sources/AppleDevelopmentKit/
@@ -10,7 +10,7 @@ Sources/AppleDevelopmentKit/
 └── domain/
     ├── DomainAction/                   # Public input actions
     ├── DomainModel/                    # Public input/output values
-    ├── Service/                        # Internal platform adapters/orchestration
+    ├── Service/                        # Public service interfaces and orchestration
     ├── State/                          # Public observable state container
     └── UseCase/                        # Internal action workflows
 ```
@@ -19,7 +19,7 @@ Concrete types live in a role directory named after the type. Tests mirror the p
 
 ## Concurrency and state
 
-`AppleServiceActor` isolates `AppleServiceStateContainer`. Clients create the container and send `AppleServiceAction` values asynchronously. Use cases receive the existing immutable domain state and an action payload, produce a new state, and log failures through `ObservabilityService` in debug builds.
+`AppleServiceActor` isolates `AppleServiceStateContainer`. Clients create the container and send `AppleServiceAction` values asynchronously. Use cases receive the existing immutable domain state, an action payload, and injected service interfaces, produce a new state, and log failures through `ObservabilityServiceProtocol`.
 
 The container is app-owned state, not a process-global singleton. Create one per independent workflow/session owner and observe its `state` using Swift Observation.
 
@@ -53,10 +53,10 @@ Add a new workflow by defining a public `AppleServiceAction` case and domain pay
 
 ## Intentional boundaries
 
-This library cannot expose APIs Apple does not make public to third-party developers. It also cannot provide complete generic app actions where the behavior depends on the consuming app’s model, UI, record schema, or credentials. The native framework re-export ensures callers retain access to the full documented SDK surface while the use-case layer grows around stable, reusable workflows.
+This library cannot expose APIs Apple does not make public to third-party developers. It also cannot provide complete generic app actions where the behavior depends on the consuming app’s model, UI, record schema, or credentials. The separate AppleServices package re-exports native framework modules and implements these stable interfaces; the use-case layer can evolve independently.
 
 ## Full service API coverage
 
-`AppleServiceUseCaseCatalog` is the searchable service inventory. It records the workflows currently implemented in this package and directs callers to the re-exported native frameworks for APIs that require host-owned configuration. See [Service Coverage](ServiceCoverage.md) for the API and limitation matrix for FaceTime, Messages, iCloud Drive, Notes, Calendar, Reminders, Keychain/Passwords, Pages, Numbers, Keynote, App Intents, app lifecycle/delegates, and iCloud sync.
+`AppleServiceUseCaseCatalog` is the searchable service inventory. It records the workflows currently implemented in this package and directs callers to native frameworks re-exported by AppleServices for APIs that require host-owned configuration. See [Service Coverage](ServiceCoverage.md) for the API and limitation matrix for FaceTime, Messages, iCloud Drive, Notes, Calendar, Reminders, Keychain/Passwords, Pages, Numbers, Keynote, App Intents, app lifecycle/delegates, and iCloud sync.
 
 The catalog is metadata, not an execution facade. See the service-specific workflow sections and [Service Coverage](ServiceCoverage.md) for implemented operations and APIs that remain host-app responsibilities. Notes database CRUD and general Messages database access are not public third-party APIs.

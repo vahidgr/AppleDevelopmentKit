@@ -2,8 +2,8 @@ import Foundation
 
 struct OpenAppURL: Sendable {
     private let service: any AppURLServiceProtocol
-    private let observabilityService: ObservabilityService
-    init(service: any AppURLServiceProtocol = AppURLService(), observabilityService: ObservabilityService = ObservabilityService()) {
+    private let observabilityService: any ObservabilityServiceProtocol
+    init(service: any AppURLServiceProtocol, observabilityService: any ObservabilityServiceProtocol = NullObservabilityService()) {
         self.service = service
         self.observabilityService = observabilityService
     }

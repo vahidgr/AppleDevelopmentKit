@@ -2,8 +2,8 @@ import Foundation
 
 struct StoreKeychainPassword: Sendable {
     private let service: any KeychainPasswordServiceProtocol
-    private let observabilityService: ObservabilityService
-    init(service: any KeychainPasswordServiceProtocol = KeychainPasswordService(), observabilityService: ObservabilityService = ObservabilityService()) {
+    private let observabilityService: any ObservabilityServiceProtocol
+    init(service: any KeychainPasswordServiceProtocol, observabilityService: any ObservabilityServiceProtocol = NullObservabilityService()) {
         self.service = service
         self.observabilityService = observabilityService
     }

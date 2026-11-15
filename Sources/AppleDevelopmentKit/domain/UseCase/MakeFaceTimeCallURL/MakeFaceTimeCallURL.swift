@@ -1,10 +1,10 @@
 struct MakeFaceTimeCallURL: Sendable {
-    private let faceTimeCallService: FaceTimeCallService
-    private let observabilityService: ObservabilityService
+    private let faceTimeCallService: any FaceTimeCallServiceProtocol
+    private let observabilityService: any ObservabilityServiceProtocol
 
     init(
-        faceTimeCallService: FaceTimeCallService = FaceTimeCallService(),
-        observabilityService: ObservabilityService = ObservabilityService()
+        faceTimeCallService: any FaceTimeCallServiceProtocol,
+        observabilityService: any ObservabilityServiceProtocol = NullObservabilityService()
     ) {
         self.faceTimeCallService = faceTimeCallService
         self.observabilityService = observabilityService

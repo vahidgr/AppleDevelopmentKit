@@ -3,6 +3,23 @@ import Foundation
 
 enum WorkflowServiceFailure: Error { case failed }
 
+struct MockFaceTimeCallService: FaceTimeCallServiceProtocol {
+    func makeURL(destination: String, type: FaceTimeCallType) throws -> URL {
+        guard destination == destination.trimmingCharacters(in: .whitespacesAndNewlines), !destination.isEmpty else {
+            throw WorkflowServiceFailure.failed
+        }
+        let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "@+.-()#*"))
+        guard destination.unicodeScalars.allSatisfy(allowed.contains) else { throw WorkflowServiceFailure.failed }
+        let scheme = type == .audio ? "facetime-audio" : "facetime"
+        guard let url = URL(string: "\(scheme)://\(destination)") else { throw WorkflowServiceFailure.failed }
+        return url
+    }
+}
+
+struct MockObservabilityService: ObservabilityServiceProtocol {
+    func log(_ error: any Error) {}
+}
+
 struct MockCalendarEventService: CalendarEventServiceProtocol {
     let result: Result<String, WorkflowServiceFailure>
     func create(title: String, startDate: Date, endDate: Date) async throws -> String { try result.get() }
@@ -51,4 +68,28 @@ struct MockCloudRecordService: CloudRecordServiceProtocol {
 
 struct MockICloudAccountServiceForContainer: ICloudAccountServiceProtocol {
     func accountStatus() async throws -> String { "available" }
+}
+
+func makeMockAppleDevelopmentKitServices() -> AppleDevelopmentKitServices {
+    let fileURL = URL(fileURLWithPath: "/tmp/document.pages")
+    return AppleDevelopmentKitServices(
+        faceTimeCall: MockFaceTimeCallService(),
+        iCloudAccount: MockICloudAccountServiceForContainer(),
+        calendarEvent: MockCalendarEventService(result: .success("event")),
+        reminder: MockReminderService(result: .success("reminder")),
+        keychainPassword: MockKeychainPasswordService(readResult: .success(Data([7])), writeResult: .success(())),
+        iCloudDocument: MockICloudDocumentService(listResult: .success([fileURL]), copyResult: .success(fileURL), downloadResult: .success(())),
+        iWorkDocumentExport: MockIWorkDocumentExportService(result: .success(fileURL)),
+        messageCompose: MockMessageComposeService(),
+        appURL: MockAppURLService(result: .success(true)),
+        cloudRecord: MockCloudRecordService(saveResult: .success(()), readResult: .success(Data([8])), deleteResult: .success(())),
+        observability: MockObservabilityService()
+    )
+}
+
+struct MockMessageComposeService: MessageComposeServiceProtocol {
+    func makeURL(recipient: String, body: String?) throws -> URL {
+        guard !recipient.contains(" ") else { throw WorkflowServiceFailure.failed }
+        return URL(string: "sms:\(recipient)")!
+    }
 }

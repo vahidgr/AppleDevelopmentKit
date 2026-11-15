@@ -2,8 +2,8 @@ import Foundation
 
 struct DownloadICloudFile: Sendable {
     private let service: any ICloudDocumentServiceProtocol
-    private let observabilityService: ObservabilityService
-    init(service: any ICloudDocumentServiceProtocol = ICloudDocumentService(), observabilityService: ObservabilityService = ObservabilityService()) {
+    private let observabilityService: any ObservabilityServiceProtocol
+    init(service: any ICloudDocumentServiceProtocol, observabilityService: any ObservabilityServiceProtocol = NullObservabilityService()) {
         self.service = service
         self.observabilityService = observabilityService
     }

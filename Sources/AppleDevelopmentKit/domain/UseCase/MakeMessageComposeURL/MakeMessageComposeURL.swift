@@ -1,7 +1,7 @@
 struct MakeMessageComposeURL: Sendable {
     private let service: any MessageComposeServiceProtocol
-    private let observabilityService: ObservabilityService
-    init(service: any MessageComposeServiceProtocol = MessageComposeService(), observabilityService: ObservabilityService = ObservabilityService()) {
+    private let observabilityService: any ObservabilityServiceProtocol
+    init(service: any MessageComposeServiceProtocol, observabilityService: any ObservabilityServiceProtocol = NullObservabilityService()) {
         self.service = service
         self.observabilityService = observabilityService
     }

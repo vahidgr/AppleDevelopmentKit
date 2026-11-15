@@ -12,23 +12,20 @@ import Testing
         let cloud = MockCloudRecordService(
             saveResult: .success(()), readResult: .success(Data([8])), deleteResult: .success(())
         )
-        let container = AppleServiceUseCaseContainer(
-            checkICloudAccount: CheckICloudAccount(iCloudAccountService: MockICloudAccountServiceForContainer()),
-            createCalendarEvent: CreateCalendarEvent(service: MockCalendarEventService(result: .success("event"))),
-            createReminder: CreateReminder(service: MockReminderService(result: .success("reminder"))),
-            storeKeychainPassword: StoreKeychainPassword(service: passwords),
-            readKeychainPassword: ReadKeychainPassword(service: passwords),
-            deleteKeychainPassword: DeleteKeychainPassword(service: passwords),
-            listICloudDocuments: ListICloudDocuments(service: files),
-            copyFileToICloud: CopyFileToICloud(service: files),
-            downloadICloudFile: DownloadICloudFile(service: files),
-            exportIWorkDocumentToPDF: ExportIWorkDocumentToPDF(service: MockIWorkDocumentExportService(result: .success(fileURL))),
-            makeMessageComposeURL: MakeMessageComposeURL(),
-            openAppURL: OpenAppURL(service: MockAppURLService(result: .success(true))),
-            saveICloudRecord: SaveICloudRecord(service: cloud),
-            readICloudRecord: ReadICloudRecord(service: cloud),
-            deleteICloudRecord: DeleteICloudRecord(service: cloud)
+        let services = AppleDevelopmentKitServices(
+            faceTimeCall: MockFaceTimeCallService(),
+            iCloudAccount: MockICloudAccountServiceForContainer(),
+            calendarEvent: MockCalendarEventService(result: .success("event")),
+            reminder: MockReminderService(result: .success("reminder")),
+            keychainPassword: passwords,
+            iCloudDocument: files,
+            iWorkDocumentExport: MockIWorkDocumentExportService(result: .success(fileURL)),
+            messageCompose: MockMessageComposeService(),
+            appURL: MockAppURLService(result: .success(true)),
+            cloudRecord: cloud,
+            observability: MockObservabilityService()
         )
+        let container = AppleServiceUseCaseContainer(services: services)
         let start = Date.now
         let end = start.addingTimeInterval(60)
         var state = AppleServiceDomainState()

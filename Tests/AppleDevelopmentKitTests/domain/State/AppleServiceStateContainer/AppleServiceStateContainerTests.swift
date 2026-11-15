@@ -3,7 +3,7 @@ import AppleDevelopmentKit
 
 @AppleServiceActor
 struct AppleServiceStateContainerTests {
-    private let stateContainer = AppleServiceStateContainer()
+    private let stateContainer = AppleServiceStateContainer(services: makeMockAppleDevelopmentKitServices())
 
     @Test func makesVideoCallURL() async {
         await stateContainer.send(.makeFaceTimeCallURL(destination: "person@example.com", type: .video))

@@ -2,8 +2,8 @@ import Foundation
 
 struct CreateCalendarEvent: Sendable {
     private let service: any CalendarEventServiceProtocol
-    private let observabilityService: ObservabilityService
-    init(service: any CalendarEventServiceProtocol = CalendarEventService(), observabilityService: ObservabilityService = ObservabilityService()) {
+    private let observabilityService: any ObservabilityServiceProtocol
+    init(service: any CalendarEventServiceProtocol, observabilityService: any ObservabilityServiceProtocol = NullObservabilityService()) {
         self.service = service
         self.observabilityService = observabilityService
     }

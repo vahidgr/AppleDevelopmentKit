@@ -1,6 +1,6 @@
 # AppleDevelopmentKit
 
-AppleDevelopmentKit is a Swift Package Manager library that provides reusable workflows over public Apple APIs and re-exports the native API umbrella from [AppleServices](https://github.com/vahidgr/AppleServices).
+AppleDevelopmentKit is a Swift Package Manager library that defines public service interfaces and reusable workflows over Apple APIs. It has no dependency on a concrete service provider; [AppleServices](https://github.com/vahidgr/AppleServices) implements these interfaces in the data layer.
 
 ## Requirements
 
@@ -17,11 +17,12 @@ In Xcode, choose **File → Add Package Dependencies** and enter this repository
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/vahidgr/AppleDevelopmentKit.git", from: "2.0.0")
+    .package(url: "https://github.com/vahidgr/AppleDevelopmentKit.git", from: "3.0.0"),
+    .package(url: "https://github.com/vahidgr/AppleServices.git", from: "2.0.0")
 ]
 ```
 
-Add the `AppleDevelopmentKit` product to your target. Importing it also makes the public modules re-exported by `AppleServices` available:
+Add both products to your target. Import AppleServices to create its concrete adapters:
 
 ```swift
 import AppleDevelopmentKit
@@ -33,8 +34,10 @@ The package’s public workflow is an action/state interface:
 
 ```swift
 import AppleDevelopmentKit
+import AppleServices
 
-let services = await AppleServiceStateContainer()
+let adapters = await AppleServicesDependencyFactory.makeAppleDevelopmentKitServices()
+let services = await AppleServiceStateContainer(services: adapters)
 
 await services.send(.makeFaceTimeCallURL(
     destination: "person@example.com",
@@ -80,7 +83,7 @@ On a failed action, the relevant result is cleared, `lastError` is set, and the 
 let capabilities = AppleServiceUseCaseCatalog().search("EventKit")
 ```
 
-The catalog covers FaceTime/SharePlay, Messages, iCloud Drive, Notes, Calendar, Reminders, Keychain/Password AutoFill, Pages, Numbers, Keynote, App Intents, app lifecycle/delegates, and iCloud sync. `AppleServiceCapability` identifies the access class, related framework modules, and relevant API boundary. The full native API symbols remain available through the `AppleServices` re-export.
+The catalog covers FaceTime/SharePlay, Messages, iCloud Drive, Notes, Calendar, Reminders, Keychain/Password AutoFill, Pages, Numbers, Keynote, App Intents, app lifecycle/delegates, and iCloud sync. `AppleServiceCapability` identifies the access class, related framework modules, and relevant API boundary. AppleDevelopmentKit exposes public service protocols. Import AppleServices separately for concrete implementations and native framework re-exports.
 
 Implemented workflows now include FaceTime and SMS composer URL creation, CloudKit account status, Calendar event creation, Reminders creation, app-owned Keychain password store/read/delete, iCloud Drive document list/copy/download, and Pages/Numbers/Keynote PDF export through Apple's authenticated iWork API. Read Keychain data is held in observable state until `.clearKeychainPassword` or a delete action; copy it promptly and clear it when finished.
 
@@ -97,7 +100,7 @@ Calendar event creation requires `NSCalendarsWriteOnlyAccessUsageDescription` (a
 
 ## Native API access and host-app responsibilities
 
-The package re-exports all modules from `AppleServices`; import `AppleDevelopmentKit` when using either its workflows or the underlying native frameworks. The host app remains responsible for:
+AppleServices re-exports native framework modules. Import it when using those SDK symbols; AppleDevelopmentKit remains independent. The host app remains responsible for:
 
 - Messages app extensions and credential-provider extensions, which require extension targets and entitlements.
 - App Intents and app/scene delegates, which must be connected to the host application’s actions, entities, scene setup, and associated domains. `openAppURL` only opens the provided URL; it does not install a route handler.

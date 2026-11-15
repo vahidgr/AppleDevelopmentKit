@@ -2,8 +2,8 @@ import Foundation
 
 struct ExportIWorkDocumentToPDF: Sendable {
     private let service: any IWorkDocumentExportServiceProtocol
-    private let observabilityService: ObservabilityService
-    init(service: any IWorkDocumentExportServiceProtocol = IWorkDocumentExportService(), observabilityService: ObservabilityService = ObservabilityService()) {
+    private let observabilityService: any ObservabilityServiceProtocol
+    init(service: any IWorkDocumentExportServiceProtocol, observabilityService: any ObservabilityServiceProtocol = NullObservabilityService()) {
         self.service = service
         self.observabilityService = observabilityService
     }

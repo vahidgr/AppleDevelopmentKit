@@ -1,10 +1,10 @@
 struct CheckICloudAccount: Sendable {
     private let iCloudAccountService: any ICloudAccountServiceProtocol
-    private let observabilityService: ObservabilityService
+    private let observabilityService: any ObservabilityServiceProtocol
 
     init(
-        iCloudAccountService: any ICloudAccountServiceProtocol = ICloudAccountService(),
-        observabilityService: ObservabilityService = ObservabilityService()
+        iCloudAccountService: any ICloudAccountServiceProtocol,
+        observabilityService: any ObservabilityServiceProtocol = NullObservabilityService()
     ) {
         self.iCloudAccountService = iCloudAccountService
         self.observabilityService = observabilityService

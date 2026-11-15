@@ -1,5 +1,5 @@
 import Foundation
 
-protocol AppURLServiceProtocol: Sendable {
+public protocol AppURLServiceProtocol: Sendable {
     func open(_ url: URL) async throws -> Bool
 }

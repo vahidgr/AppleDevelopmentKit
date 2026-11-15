@@ -2,8 +2,8 @@ import Foundation
 
 struct ReadICloudRecord: Sendable {
     private let service: any CloudRecordServiceProtocol
-    private let observabilityService: ObservabilityService
-    init(service: any CloudRecordServiceProtocol = CloudRecordService(), observabilityService: ObservabilityService = ObservabilityService()) {
+    private let observabilityService: any ObservabilityServiceProtocol
+    init(service: any CloudRecordServiceProtocol, observabilityService: any ObservabilityServiceProtocol = NullObservabilityService()) {
         self.service = service
         self.observabilityService = observabilityService
     }

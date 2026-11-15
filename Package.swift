@@ -11,13 +11,9 @@ let package = Package(
     products: [
         .library(name: "AppleDevelopmentKit", targets: ["AppleDevelopmentKit"]),
     ],
-    dependencies: [
-        .package(url: "https://github.com/vahidgr/AppleServices.git", from: "1.0.0"),
-    ],
     targets: [
         .target(
             name: "AppleDevelopmentKit",
-            dependencies: [.product(name: "AppleServices", package: "AppleServices")],
             swiftSettings: [.enableUpcomingFeature("ApproachableConcurrency")]
         ),
         .testTarget(

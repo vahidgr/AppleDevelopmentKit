@@ -11,8 +11,8 @@ public final class AppleServiceStateContainer {
     public private(set) var state = AppleServiceDomainState()
     private let useCases: AppleServiceUseCaseContainer
 
-    public init() {
-        useCases = AppleServiceUseCaseContainer()
+    public init(services: AppleDevelopmentKitServices) {
+        useCases = AppleServiceUseCaseContainer(services: services)
     }
 
     public func send(_ action: AppleServiceAction) async {

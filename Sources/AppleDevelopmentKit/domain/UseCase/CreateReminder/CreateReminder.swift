@@ -2,8 +2,8 @@ import Foundation
 
 struct CreateReminder: Sendable {
     private let service: any ReminderServiceProtocol
-    private let observabilityService: ObservabilityService
-    init(service: any ReminderServiceProtocol = ReminderService(), observabilityService: ObservabilityService = ObservabilityService()) {
+    private let observabilityService: any ObservabilityServiceProtocol
+    init(service: any ReminderServiceProtocol, observabilityService: any ObservabilityServiceProtocol = NullObservabilityService()) {
         self.service = service
         self.observabilityService = observabilityService
     }
