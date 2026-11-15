@@ -3,26 +3,26 @@
 import PackageDescription
 
 let package = Package(
-    name: "AppleServiceUseCases",
+    name: "AppleDevelopmentKit",
     platforms: [
         .iOS(.v17),
         .macOS(.v14),
     ],
     products: [
-        .library(name: "AppleServiceUseCases", targets: ["AppleServiceUseCases"]),
+        .library(name: "AppleDevelopmentKit", targets: ["AppleDevelopmentKit"]),
     ],
     dependencies: [
         .package(url: "https://github.com/vahidgr/AppleServices.git", from: "1.0.0"),
     ],
     targets: [
         .target(
-            name: "AppleServiceUseCases",
+            name: "AppleDevelopmentKit",
             dependencies: [.product(name: "AppleServices", package: "AppleServices")],
             swiftSettings: [.enableUpcomingFeature("ApproachableConcurrency")]
         ),
         .testTarget(
-            name: "AppleServiceUseCasesTests",
-            dependencies: ["AppleServiceUseCases"],
+            name: "AppleDevelopmentKitTests",
+            dependencies: ["AppleDevelopmentKit"],
             swiftSettings: [.enableUpcomingFeature("ApproachableConcurrency")]
         ),
     ]
