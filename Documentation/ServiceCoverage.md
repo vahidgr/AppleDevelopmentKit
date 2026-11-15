@@ -1,6 +1,6 @@
 # Apple service API coverage
 
-AppleDevelopmentKit combines reusable workflows with a re-export of Apple's SDK modules through AppleServices. The re-export makes documented framework symbols available to a consuming target; it does not change SDK availability, permissions, entitlements, extension requirements, sandboxing, or Apple service access policy.
+AppleDevelopmentKit defines service protocols, provides reusable workflows, and re-exports Apple SDK modules. AppleServices implements its protocols as a separate data layer and provides a factory for wiring the adapters into workflows. The re-export makes documented framework symbols available to a consuming target; it does not change SDK availability, permissions, entitlements, extension requirements, sandboxing, or Apple service access policy.
 
 Use `AppleServiceUseCaseCatalog` to search service names, framework names, and summaries. Its `access` field means:
 
@@ -29,11 +29,13 @@ Use `AppleServiceUseCaseCatalog` to search service names, framework names, and s
 
 ```swift
 import AppleDevelopmentKit
+import AppleServices
 
 let catalog = AppleServiceUseCaseCatalog()
 let entries = catalog.search("EventKit")
 
-let state = await AppleServiceStateContainer()
+let adapters = await AppleServicesDependencyFactory.makeAppleDevelopmentKitServices()
+let state = await AppleServiceStateContainer(services: adapters)
 await state.send(.checkICloudAccount)
 await state.send(.saveICloudRecord(scope: .private, recordType: "Draft", recordName: "draft-1", payload: Data("...".utf8)))
 await state.send(.openAppURL(URL(string: "myapp://draft/draft-1?instruction=edit")!))

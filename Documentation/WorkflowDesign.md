@@ -49,7 +49,7 @@ Store, read, and delete actions operate on generic password items in the calling
 
 ## Extension points
 
-Add a new workflow by defining a public `AppleServiceAction` case and domain payload, a domain state output if needed, a Service adapter for native Apple API calls, and an internal UseCase that maps the action and existing state to a new state. Add Swift Testing coverage for success and error paths. Keep host-app setup (entitlements, Info.plist keys, extension targets, associated domains, CloudKit schema) in the consuming app and document it alongside the relevant workflow.
+Add a new workflow by defining a public `AppleServiceAction` case and domain payload, a domain state output if needed, a public service protocol in AppleDevelopmentKit, its concrete adapter in AppleServices, and an internal UseCase that maps the action and existing state to a new state. Add Swift Testing coverage for success and error paths. Keep host-app setup (entitlements, Info.plist keys, extension targets, associated domains, CloudKit schema) in the consuming app and document it alongside the relevant workflow.
 
 ## Intentional boundaries
 

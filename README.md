@@ -83,7 +83,7 @@ On a failed action, the relevant result is cleared, `lastError` is set, and the 
 let capabilities = AppleServiceUseCaseCatalog().search("EventKit")
 ```
 
-The catalog covers FaceTime/SharePlay, Messages, iCloud Drive, Notes, Calendar, Reminders, Keychain/Password AutoFill, Pages, Numbers, Keynote, App Intents, app lifecycle/delegates, and iCloud sync. `AppleServiceCapability` identifies the access class, related framework modules, and relevant API boundary. AppleDevelopmentKit exposes public service protocols. Import AppleServices separately for concrete implementations and native framework re-exports.
+The catalog covers FaceTime/SharePlay, Messages, iCloud Drive, Notes, Calendar, Reminders, Keychain/Password AutoFill, Pages, Numbers, Keynote, App Intents, app lifecycle/delegates, and iCloud sync. `AppleServiceCapability` identifies the access class, related framework modules, and relevant API boundary. AppleDevelopmentKit exposes public service protocols and re-exports the native Apple SDK modules directly. Import AppleServices when you want its concrete service implementations.
 
 Implemented workflows now include FaceTime and SMS composer URL creation, CloudKit account status, Calendar event creation, Reminders creation, app-owned Keychain password store/read/delete, iCloud Drive document list/copy/download, and Pages/Numbers/Keynote PDF export through Apple's authenticated iWork API. Read Keychain data is held in observable state until `.clearKeychainPassword` or a delete action; copy it promptly and clear it when finished.
 
